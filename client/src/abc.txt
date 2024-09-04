@@ -1,0 +1,95 @@
+import React, { useEffect, useState } from "react";
+import CarouselComponent from "../components/Carousel";
+import { Link } from "react-router-dom";
+
+const Home = () => {
+  const [show, setshow] = useState(false);
+  const [products, setproducts] = useState();
+  const [Id, setId] = useState("");
+  const getProducts = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/product/getall`, {
+        method: "GET",
+      });
+
+      const res = await response.json();
+
+      if (response.ok) {
+        setproducts(res.product);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {}
+  };
+  useEffect(() => {
+    getProducts();
+  }, []);
+  const enter = (id) => {
+    setId(id);
+    setshow(true);
+  };
+  const leave = (id) => {
+    setId("");
+    setshow(false);
+  };
+  return (
+    <div className="">
+      <CarouselComponent />
+      <div>
+        <div className="flex justify-center font-serif py-20   text-7xl">
+          <span className=" underline">Our </span>
+          <span className="pl-5 text-red-500 underline">Products</span>
+        </div>
+
+        <div className="flex justify-center flex-wrap m-10">
+          {products?.map((p) => (
+            <Link
+              key={p._id}
+              className="flex flex-col gap-5 border border-gray-500 rounded-lg p-5 m-10 w-60"
+              onMouseEnter={() => enter(p._id)}
+              onMouseLeave={() => leave(p._id)}
+            >
+              {show && Id === p._id ? (
+                <div>
+                  <div className="absolute top-32 z-10 ">
+                    <button className="w-32 bg-red-400 text-white">
+                      Add to cart
+                    </button>
+                    <button>More details</button>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+              <div className=" flex justify-center">
+                <img src={p.photo} alt="image" className="h-60" />
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2 ">
+                <span className="text-2xl text-center">{p.name}</span>
+                <span className="text-center text-xl">from ${p.price}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Home;
+
+
+
+
+
+ <div className="absolute top-28 left-14">
+                  <div className="flex flex-col gap-6 text-white w-44 text-xl">
+                    <button className="px-5 py-2 bg-blue-500  rounded-full hover:bg-blue-700">
+                      More details
+                    </button>
+                    <button className="px-5 py-2 bg-red-500  rounded-full hover:bg-red-700">
+                      Add to cart
+                    </button>
+                  </div>
+                </div>
